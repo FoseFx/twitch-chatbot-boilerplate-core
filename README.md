@@ -24,30 +24,28 @@
 
 5. Create a new Twitch Account for your bot. (You need 2FA on this one aswell if you like to get verified)
 
-6. Clone or download this repository
-7. Install dependencies `npm install`
+6. Install this package: `npm i twitch-chatbot-boilerplate`
 
 ![screenshot][i4]
 
-8. Generate a new secret and copy both the secret and your Client-ID
-9. Create a `.env` file ([download an example here][env-example]) and enter all necessary information, alternatively you can use any other way of setting an environment variable
-10. Download or create your own [views directory][views-dl]. If you choose to download it, download the [public directory][public-dl] aswell.
-11. Install the npm package and call `initialize()`:
+7. Generate a new secret and copy both the secret and your Client-ID
+8. Create a `.env` file ([download an example here][env-example]) and enter all necessary information, alternatively you can use any other way of setting an environment variable
+9. Download or create your own [views directory][views-dl]. If you choose to download it, download the [public directory][public-dl] aswell.
+10. Call in your code `initialize()`:
 
 ```JavaScript
-// npm install twitch-chatbot-boilerplate
 const { initialize } = require("twitch-chatbot-boilerplate");
 initialize().then(({client, app}) => /* Your code */);
 ```
 
-12. Run your code and follow further instructions
+11. Run your code and follow further instructions
 
 ![screenshot][i5]
 
-13. Write your code
+12. Write your bot's logic
 
-14. Deploy it
-15. **Profit**
+13. Deploy it
+14. **Profit**
 
 ## Next Steps
 
