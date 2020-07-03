@@ -77,12 +77,12 @@ const { client } = await initialize(options);
 Normaly streamers can add the bot by visiting `/add` and remove it on `/remove`.
 When the bot goes down and needs to be restarted, the list of channels is persisted in `.config/channels.json`.
 If you need to, for whatever reason, join or part channels programmatically,
-import the `joinChannel()` and `leaveChannel()` functions from `core/bot/bot.js`.
+import the `joinChannel()` and `leaveChannel()` functions.
 
 Example:
 
 ```JavaScript
-const { joinChannel, leaveChannel } = require('./node_modules/twitch-chatbot-boilerplate/build/src/core/bot/bot.js');
+const { joinChannel, leaveChannel } = require('twitch-chatbot-boilerplate';
 
 ...
 await joinChannel("fosefx");
