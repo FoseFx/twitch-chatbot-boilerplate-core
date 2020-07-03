@@ -110,13 +110,9 @@ The following files in `public/fonts` are licensed under the [SIL Open Font Lice
 
 `public/TwitchGlitchWhite.png`: Copyright (c) Twitch Interactive, Inc
 
-<<<<<<< HEAD
 [views-dl]: https://downgit.github.io/#/home?url=https://github.com/FoseFx/twitch-chatbot-boilerplate/tree/npm/views
 [public-dl]: https://downgit.github.io/#/home?url=https://github.com/FoseFx/twitch-chatbot-boilerplate/tree/npm/public
 [env-example]: https://raw.githubusercontent.com/FoseFx/twitch-chatbot-boilerplate/npm/.env.example
-=======
-[npm-version]: https://github.com/FoseFx/twitch-chatbot-boilerplate/tree/npm/#twitch-chatbot-boilerplate-npm-package
->>>>>>> master
 [typescript]: https://www.typescriptlang.org/
 [tmijs]: https://tmijs.com/
 [license-badge]: https://img.shields.io/badge/license-Unlicense-blue.svg
