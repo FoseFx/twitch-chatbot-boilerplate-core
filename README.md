@@ -130,9 +130,9 @@ The following files in `public/fonts` are licensed under the [SIL Open Font Lice
 [tmijsdocs]: https://github.com/tmijs/docs/tree/gh-pages/_posts/v1.4.2
 [limits]: https://dev.twitch.tv/docs/irc/guide#command--message-limits
 [verifydocs]: https://dev.twitch.tv/docs/irc/guide#known-and-verified-bots
-[i1]: https://github.com/FoseFx/twitch-chatbot-boilerplate/blob/master/.github/images/1.jpg?raw=true
-[i2]: https://github.com/FoseFx/twitch-chatbot-boilerplate/blob/master/.github/images/2.jpg?raw=true
-[i3]: https://github.com/FoseFx/twitch-chatbot-boilerplate/blob/master/.github/images/3.jpg?raw=true
-[i4]: https://github.com/FoseFx/twitch-chatbot-boilerplate/blob/master/.github/images/4.jpg?raw=true
-[i5]: https://github.com/FoseFx/twitch-chatbot-boilerplate/blob/master/.github/images/5.png?raw=true
+[i1]: https://github.com/FoseFx/twitch-chatbot-boilerplate/blob/npm/.github/images/1.jpg?raw=true
+[i2]: https://github.com/FoseFx/twitch-chatbot-boilerplate/blob/npm/.github/images/2.jpg?raw=true
+[i3]: https://github.com/FoseFx/twitch-chatbot-boilerplate/blob/npm/.github/images/3.jpg?raw=true
+[i4]: https://github.com/FoseFx/twitch-chatbot-boilerplate/blob/npm/.github/images/4.jpg?raw=true
+[i5]: https://github.com/FoseFx/twitch-chatbot-boilerplate/blob/npm/.github/images/5.png?raw=true
 [setuproutes]: https://github.com/FoseFx/twitch-chatbot-boilerplate/blob/master/src/core/server/routes.ts#L16
