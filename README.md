@@ -3,20 +3,9 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/7a50cf1e04aa3d0ad861/maintainability)](https://codeclimate.com/github/FoseFx/twitch-chatbot-boilerplate/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/7a50cf1e04aa3d0ad861/test_coverage)](https://codeclimate.com/github/FoseFx/twitch-chatbot-boilerplate/test_coverage)
 
-# twitch-chatbot-boilerplate
+# twitch-chatbot-boilerplate npm-package
 
 > This project is not affiliated to Twitch Interactive Inc in any way.
-
-Uses:
-
-- [TypeScript][typescript]
-- [tmi.js (Twitch Messaging Interface)][tmijs]
-- [express][express]
-- [ESLint][eslint]
-- [Jest][jest]
-- [Prettier][prettier]
-- [.editorconfig][editorconfig]
-- [dotenv][dotenv]
 
 ## How does it work?
 
@@ -41,21 +30,27 @@ Uses:
 ![screenshot][i4]
 
 8. Generate a new secret and copy both the secret and your Client-ID
-9. Create a `.env` file (`cp .env.example .env`) and enter all necessary information, alternatively you can use any other way of setting an environment variable
-10. Build and start the bot `npm run build` and `npm run start`
-11. Follow further instructions
+9. Create a `.env` file ([download an example here][env-example]) and enter all necessary information, alternatively you can use any other way of setting an environment variable
+10. Download or create your own [views directory][views-dl]. If you choose to download it, download the [public directory][public-dl] aswell.
+11. Install the npm package and call `initialize()`:
+
+```JavaScript
+// npm install twitch-chatbot-boilerplate
+const { initialize } = require("twitch-chatbot-boilerplate");
+initialize().then(({client, app}) => /* Your code */);
+```
+
+12. Run your code and follow further instructions
 
 ![screenshot][i5]
 
-12. Write your bot (`/main.ts`)
+13. Write your code
 
-13. Deploy it
-14. **Profit**
+14. Deploy it
+15. **Profit**
 
 ## Next Steps
 
-- Customize the `/views`
-- Add static files to `/public`
 - Read the [tmi.js docs][tmijsdocs]
 - Read more about [commands and message limits][limits]
 - Get your bot [known and verified][verifydocs]
@@ -69,7 +64,7 @@ Instead you need to use the `beforeRouteSetup` hook.
 
 Example:
 
-```TypeScript
+```JavaScript
 const options = {
     beforeRouteSetup(app) {
         app.get('/test', (req, res) => { ... })
@@ -84,12 +79,12 @@ const { client } = await initialize(options);
 Normaly streamers can add the bot by visiting `/add` and remove it on `/remove`.
 When the bot goes down and needs to be restarted, the list of channels is persisted in `.config/channels.json`.
 If you need to, for whatever reason, join or part channels programmatically,
-import the `joinChannel()` and `leaveChannel()` functions from `core/bot/bot.ts`.
+import the `joinChannel()` and `leaveChannel()` functions from `core/bot/bot.js`.
 
 Example:
 
-```TypeScript
-import { joinChannel, leaveChannel } from './core/bot/bot.ts';
+```JavaScript
+const { joinChannel, leaveChannel } = require('./node_modules/twitch-chatbot-boilerplate/build/src/core/bot/bot.js');
 
 ...
 await joinChannel("fosefx");
@@ -115,6 +110,9 @@ The following files in `public/fonts` are licensed under the [SIL Open Font Lice
 
 `public/TwitchGlitchWhite.png`: Copyright (c) Twitch Interactive, Inc
 
+[views-dl]: https://downgit.github.io/#/home?url=https://github.com/FoseFx/twitch-chatbot-boilerplate/tree/npm/views
+[public-dl]: https://downgit.github.io/#/home?url=https://github.com/FoseFx/twitch-chatbot-boilerplate/tree/npm/public
+[env-example]: https://raw.githubusercontent.com/FoseFx/twitch-chatbot-boilerplate/npm/.env.example
 [typescript]: https://www.typescriptlang.org/
 [tmijs]: https://tmijs.com/
 [license-badge]: https://img.shields.io/badge/license-Unlicense-blue.svg
