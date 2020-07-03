@@ -1,0 +1,48 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Dependencies
+node_modules/
+
+# Coverage
+coverage
+
+# VS Code
+.vscode
+!.vscode/tasks.js
+
+# JetBrains IDEs
+.idea/
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Misc
+.DS_Store
+
+.env
+.config
+
+src
+__tests__
+
+.jest
+.github
+.mergify.yml
+.dockerignore
+.editorconfig
+.eslintignore
+.eslintrc.json
+.prettierrc
+Dockerfile
+views
+public
+.env.example
+jest.config.js
+tsconfig.json
+tsconfig.release.json

@@ -1,6 +1,6 @@
 {
   "name": "twitch-chatbot-boilerplate",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "Boilerplate for twitch chatbot projects",
   "devDependencies": {
     "@types/body-parser": "^1.19.0",
@@ -29,7 +29,7 @@
     "lint": "eslint . --ext .ts,.tsx",
     "test": "jest --coverage",
     "test:watch": "jest --watch",
-    "start": "node -e 'require(\"./build/src/main.js\").main()'"
+    "prepare": "npm run clean && npm run lint && npm run build && npm run test"
   },
   "author": "Max Baumann <max@fosefx.com>",
   "license": "Unlicense",
@@ -43,5 +43,7 @@
     "node-fetch": "^2.6.0",
     "tmi.js": "^1.5.0",
     "tslib": "~2.0.0"
-  }
+  },
+  "main": "build/src/core/core.js",
+  "types": "build/src/core/core.d.ts"
 }
