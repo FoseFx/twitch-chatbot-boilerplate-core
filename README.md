@@ -52,41 +52,7 @@ main().catch((e) => console.error(e));
 - Get your bot [known and verified][verifydocs]
 
 ## Caveats
-
-### New Routes
-
-Even though `initialize()` also returns the express instance, you can not simply add new routes (e.g. simply do a `app.get('/test', () => {...})`).
-Instead you need to use the `beforeRouteSetup` hook.
-
-Example:
-
-```JavaScript
-const options = {
-    beforeRouteSetup(app) {
-        app.get('/test', (req, res) => { ... })
-    }
-};
-
-const { client } = await initialize(options);
-```
-
-### Join and part chats
-
-Normaly streamers can add the bot by visiting `/add` and remove it on `/remove`.
-When the bot goes down and needs to be restarted, the list of channels is persisted in `.config/channels.json`.
-If you need to, for whatever reason, join or part channels programmatically,
-import the `joinChannel()` and `leaveChannel()` functions.
-
-Example:
-
-```JavaScript
-const { joinChannel, leaveChannel } = require('twitch-chatbot-boilerplate';
-
-...
-await joinChannel("fosefx");
-await leaveChannel("fosefx");
-...
-```
+See [wiki][caveats].
 
 ## Available Scripts
 
@@ -110,3 +76,4 @@ Licensed under the Unlicense. See the [LICENSE](https://github.com/fosefx/twitch
 [tmijsdocs]: https://github.com/tmijs/docs/tree/gh-pages/_posts/v1.4.2
 [limits]: https://dev.twitch.tv/docs/irc/guide#command--message-limits
 [verifydocs]: https://dev.twitch.tv/docs/irc/guide#known-and-verified-bots
+[caveats]: https://github.com/FoseFx/twitch-chatbot-boilerplate/wiki/Caveats
