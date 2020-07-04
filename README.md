@@ -1,51 +1,49 @@
 [![Unlicense][license-badge]][license]
-![Dependabot](https://flat.badgen.net/dependabot/FoseFx/twitch-chatbot-boilerplate?icon=dependabot)
-[![Maintainability](https://api.codeclimate.com/v1/badges/7a50cf1e04aa3d0ad861/maintainability)](https://codeclimate.com/github/FoseFx/twitch-chatbot-boilerplate/maintainability)
-[![Test Coverage](https://api.codeclimate.com/v1/badges/7a50cf1e04aa3d0ad861/test_coverage)](https://codeclimate.com/github/FoseFx/twitch-chatbot-boilerplate/test_coverage)
+![Dependabot](https://flat.badgen.net/dependabot/FoseFx/twitch-chatbot-boilerplate-core?icon=dependabot)
+[![Maintainability](https://api.codeclimate.com/v1/badges/8ee259e1ace1b4f7b5aa/maintainability)](https://codeclimate.com/github/FoseFx/twitch-chatbot-boilerplate-core/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/8ee259e1ace1b4f7b5aa/test_coverage)](https://codeclimate.com/github/FoseFx/twitch-chatbot-boilerplate-core/test_coverage)
 
-# twitch-chatbot-boilerplate npm-package
+# twitch-chatbot-boilerplate-core
 
 > This project is not affiliated to Twitch Interactive Inc in any way.
 
+## Read this first
+
+This package should only be used directly when you don't seek for a full boilerplate as it only exports the `initialize` function.
+It is recommended for new projects to use the [main repo as a boilerplate][boilerplate].
+
 ## How does it work?
 
-![screenshot][i1]
+> Read the [main repo's setup guide][boilerplate] first, register an app and create a new account.
 
-1. Enable 2FA in your twitch account's security settings, you need this in order to access Twitch Developers
-2. You later need to create a new account for your bot, while you are here you can allow twitch to create multiple accounts with one email address
+1. Install this package: `npm i twitch-chatbot-boilerplate`
 
-![screenshot][i2]
+2. Generate a new secret and copy both the secret and your Client-ID
+3. Create a `.env` file ([download an example here][env-example]) and enter all necessary information, alternatively you can use any other way of setting an environment variable
+4. Download or create your own [views directory][views-dl]. If you choose to download it, download the [public directory][public-dl] aswell.
 
-3. Go to [dev.twitch.tv][devtwitchtv] and [register an App][createtwitchapp].
-
-![screenshot][i3]
-
-4. Go through the wizard and make sure to include the `/setup/callback`, `/add/callback` and `/setup/callback` routes.
-
-5. Create a new Twitch Account for your bot. (You need 2FA on this one aswell if you like to get verified)
-
-6. Install this package: `npm i twitch-chatbot-boilerplate`
-
-![screenshot][i4]
-
-7. Generate a new secret and copy both the secret and your Client-ID
-8. Create a `.env` file ([download an example here][env-example]) and enter all necessary information, alternatively you can use any other way of setting an environment variable
-9. Download or create your own [views directory][views-dl]. If you choose to download it, download the [public directory][public-dl] aswell.
-10. Call in your code `initialize()`:
+5. Call `initialize()` and follow further instructions
 
 ```JavaScript
-const { initialize } = require("twitch-chatbot-boilerplate");
-initialize().then(({client, app}) => /* Your code */);
+const { initialize } = require('twitch-chatbot-boilerplate');
+
+async function main() {
+    const { client } = await initialize();
+
+    // This is the example on the tmi.js website
+    client.on('message', (channel, userstate, message, self) => {
+        if (self) return;
+        if (message.toLowerCase() === '!hello') {
+            client.say(channel, `@${userstate.username}, heya!`);
+        }
+    });
+}
+main().catch((e) => console.error(e));
 ```
 
-11. Run your code and follow further instructions
-
-![screenshot][i5]
-
-12. Write your bot's logic
-
-13. Deploy it
-14. **Profit**
+7. Write your bot's logic
+8. Deploy it
+9. **Profit**
 
 ## Next Steps
 
@@ -101,36 +99,14 @@ await leaveChannel("fosefx");
 
 ## License
 
-Licensed under the Unlicense. See the [LICENSE](https://github.com/fosefx/twitch-chatbot-boilerplate/blob/master/LICENSE) file for details.
+Licensed under the Unlicense. See the [LICENSE](https://github.com/fosefx/twitch-chatbot-boilerplate-core/blob/master/LICENSE) file for details.
 
-The following files in `public/fonts` are licensed under the [SIL Open Font License][ofl], Version 1.1, Copyright (c) 2010-2011 by tyPoland Lukasz Dziedzic (team@latofonts.com) with Reserved Font Name "Lato":
-"lato-v16-latin-900.eot", "lato-v16-latin-900.svg", "lato-v16-latin-900.ttf", "lato-v16-latin-900.woff", "lato-v16-latin-900.woff2", "lato-v16-latin-regular.eot",lato-v16-latin-regular.svg", "lato-v16-latin-regular.ttf", "lato-v16-latin-regular.woff" and "lato-v16-latin-regular.woff2"
-
-`public/TwitchGlitchWhite.png`: Copyright (c) Twitch Interactive, Inc
-
-[views-dl]: https://downgit.github.io/#/home?url=https://github.com/FoseFx/twitch-chatbot-boilerplate/tree/npm/views
-[public-dl]: https://downgit.github.io/#/home?url=https://github.com/FoseFx/twitch-chatbot-boilerplate/tree/npm/public
-[env-example]: https://raw.githubusercontent.com/FoseFx/twitch-chatbot-boilerplate/npm/.env.example
-[typescript]: https://www.typescriptlang.org/
-[tmijs]: https://tmijs.com/
+[boilerplate]: https://github.com/FoseFx/twitch-chatbot-boilerplate/
+[views-dl]: https://downgit.github.io/#/home?url=https://github.com/FoseFx/twitch-chatbot-boilerplate/tree/master/views
+[public-dl]: https://downgit.github.io/#/home?url=https://github.com/FoseFx/twitch-chatbot-boilerplate/tree/master/public
+[env-example]: https://raw.githubusercontent.com/FoseFx/twitch-chatbot-boilerplate/master/.env.example
 [license-badge]: https://img.shields.io/badge/license-Unlicense-blue.svg
-[license]: https://github.com/fosefx/twitch-chatbot-boilerplate/blob/master/LICENSE
-[ofl]: https://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=OFL
-[jest]: https://facebook.github.io/jest/
-[eslint]: https://github.com/eslint/eslint
-[prettier]: https://prettier.io
-[travis]: https://travis-ci.org
-[editorconfig]: https://editorconfig.org/
-[devtwitchtv]: https://dev.twitch.tv/
-[createtwitchapp]: https://dev.twitch.tv/docs/authentication/#registration
-[dotenv]: https://www.npmjs.com/package/dotenv
-[express]: https://expressjs.com/
+[license]: https://github.com/fosefx/twitch-chatbot-boilerplate-core/blob/master/LICENSE
 [tmijsdocs]: https://github.com/tmijs/docs/tree/gh-pages/_posts/v1.4.2
 [limits]: https://dev.twitch.tv/docs/irc/guide#command--message-limits
 [verifydocs]: https://dev.twitch.tv/docs/irc/guide#known-and-verified-bots
-[i1]: https://github.com/FoseFx/twitch-chatbot-boilerplate/blob/npm/.github/images/1.jpg?raw=true
-[i2]: https://github.com/FoseFx/twitch-chatbot-boilerplate/blob/npm/.github/images/2.jpg?raw=true
-[i3]: https://github.com/FoseFx/twitch-chatbot-boilerplate/blob/npm/.github/images/3.jpg?raw=true
-[i4]: https://github.com/FoseFx/twitch-chatbot-boilerplate/blob/npm/.github/images/4.jpg?raw=true
-[i5]: https://github.com/FoseFx/twitch-chatbot-boilerplate/blob/npm/.github/images/5.png?raw=true
-[setuproutes]: https://github.com/FoseFx/twitch-chatbot-boilerplate/blob/master/src/core/server/routes.ts#L16
