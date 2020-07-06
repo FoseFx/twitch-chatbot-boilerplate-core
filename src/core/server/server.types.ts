@@ -7,6 +7,7 @@ export interface StartServerOptions {
   clientId: string;
   clientSecret: string;
   setupScopes: string[];
+  app?: Express;
   beforeRouteSetup?: (app: Express) => void;
 }
 

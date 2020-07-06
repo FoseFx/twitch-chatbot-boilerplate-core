@@ -9,6 +9,15 @@ import * as bot from './bot/bot';
 import { setClientReadyEmitter } from './event';
 
 export interface InitializeOptions {
+  /** 
+   * You can use an existing Express instance
+   * 
+   * Note: initialize() will call app.listen()
+   * Note: initialize() will change the view engine to ejs
+   * Note: initialize() will add the cookieParser middelware
+   * */
+  app?: Express;
+  /** This hook gets called before the routes are added to the express app */
   beforeRouteSetup?: (app: Express) => void;
 }
 
@@ -26,6 +35,7 @@ export function initialize(
       clientSecret: process.env.TWITCH_CLIENT_SECRET,
       setupScopes: ['chat:read', 'chat:edit'],
       beforeRouteSetup: initializeOptions.beforeRouteSetup,
+      app: initializeOptions.app,
     };
 
     // after the bot is ready the "clientReady" event is fired on this one

@@ -1,5 +1,4 @@
 import { Express } from 'express';
-import * as bodyparser from 'body-parser';
 import * as cookieParser from 'cookie-parser';
 import { StartServerOptions } from './server.types';
 import { setUpRoutes } from './routes';
@@ -18,10 +17,8 @@ export async function startServer(
   options: StartServerOptions,
 ): Promise<Express> {
   verifyFilesExist();
-  const app = newExpressApp();
+  const app = options.app ?? newExpressApp();
   app.use(cookieParser());
-  app.use(bodyparser.json());
-
   app.set('view engine', 'ejs');
 
   setUpRoutes(app, options);
