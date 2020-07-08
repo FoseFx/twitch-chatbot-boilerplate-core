@@ -6,12 +6,12 @@ import { loadEnvVariables } from './env';
 import { startServer } from './server/server';
 import { setup } from './setup';
 import * as bot from './bot/bot';
-import { setClientReadyEmitter } from './event';
+import { setClientReadyEmitter, BoilerplateEventEmitter } from './event';
 
 export interface InitializeOptions {
-  /** 
+  /**
    * You can use an existing Express instance
-   * 
+   *
    * Note: initialize() will call app.listen()
    * Note: initialize() will change the view engine to ejs
    * Note: initialize() will add the cookieParser middelware
@@ -21,13 +21,20 @@ export interface InitializeOptions {
   beforeRouteSetup?: (app: Express) => void;
 }
 
+export interface InitializeObject {
+  client: Client;
+  app: Express;
+  boilerplate: BoilerplateEventEmitter;
+}
+
 export function initialize(
   initializeOptions: InitializeOptions = {},
-): Promise<{ client: Client; app: Express }> {
+): Promise<InitializeObject> {
   return new Promise((resolve, reject) => {
     loadEnvVariables(); // make sure all variables are available
 
     const opts: StartServerOptions = {
+      eventEmitter: new BoilerplateEventEmitter(),
       host: process.env.HOST,
       port: +process.env.PORT,
       botname: process.env.BOTNAME,
@@ -62,7 +69,7 @@ export function initialize(
         throw new Error('You should not call disconnect()');
       };
 
-      resolve({ client, app });
+      resolve({ client, app, boilerplate: opts.eventEmitter });
     });
   });
 }
@@ -70,3 +77,5 @@ export function initialize(
 export const joinChannel = bot.joinChannel;
 
 export const leaveChannel = bot.leaveChannel;
+
+export { BoilerplateEventEmitter };
