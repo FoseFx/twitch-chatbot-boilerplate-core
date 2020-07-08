@@ -27,6 +27,8 @@ export interface InitializeOptions {
   app?: Express;
   /** This hook gets called before the routes are added to the express app */
   beforeRouteSetup?: (app: Express) => void;
+  /** Ask the streamer for more permissions, see https://dev.twitch.tv/docs/authentication#scopes */
+  scopes?: string[];
 }
 
 export interface InitializeObject {
@@ -52,6 +54,7 @@ export function initialize(
       clientId: process.env.TWITCH_CLIENT_ID,
       clientSecret: process.env.TWITCH_CLIENT_SECRET,
       setupScopes: ['chat:read', 'chat:edit'],
+      scopes: initializeOptions.scopes ?? [],
       beforeRouteSetup: initializeOptions.beforeRouteSetup,
       app: initializeOptions.app,
     };
