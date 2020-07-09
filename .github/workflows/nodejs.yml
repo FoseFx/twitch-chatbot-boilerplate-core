@@ -48,12 +48,12 @@ jobs:
       - run: npm run gendocs
       - name: Commit files
         run: |
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action"
-        git add docs
-        git commit -m "New docs"
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add docs
+          git commit -m "New docs"
       - name: Push changes
         uses: ad-m/github-push-action@master
         with:
-          branch: "docs"
+          branch: 'docs'
           github_token: ${{ secrets.GITHUB_TOKEN }}
