@@ -1,12 +1,20 @@
 import { Express } from 'express';
 import { Client } from 'tmi.js';
 import { EventEmitter } from 'events';
-import { StartServerOptions } from './server/server.types';
+import {
+  StartServerOptions,
+  AuthData,
+  BasicProfile,
+} from './server/server.types';
 import { loadEnvVariables } from './env';
 import { startServer } from './server/server';
 import { setup } from './setup';
 import * as bot from './bot/bot';
-import { setClientReadyEmitter, BoilerplateEventEmitter } from './event';
+import {
+  setClientReadyEmitter,
+  BoilerplateEventEmitter,
+  AuthDataAndBasicProfile,
+} from './event';
 
 export interface InitializeOptions {
   /**
@@ -78,4 +86,9 @@ export const joinChannel = bot.joinChannel;
 
 export const leaveChannel = bot.leaveChannel;
 
-export { BoilerplateEventEmitter };
+export {
+  BoilerplateEventEmitter,
+  AuthDataAndBasicProfile,
+  AuthData,
+  BasicProfile,
+};

@@ -1,7 +1,7 @@
 import { EventEmitter } from 'events';
 import { AuthData, BasicProfile } from './server/server.types';
 
-interface AuthDataAndBasicProfile {
+export interface AuthDataAndBasicProfile {
   authData: AuthData;
   basicProfile: BasicProfile;
 }
