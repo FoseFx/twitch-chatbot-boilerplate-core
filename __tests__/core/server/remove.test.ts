@@ -7,6 +7,7 @@ import {
   TokenResponse,
   BasicProfile,
 } from '../../../src/core/server/server.types';
+import { BoilerplateEventEmitter } from '../../../src/core/core';
 
 describe('remove', () => {
   describe('removeCallbackRH', () => {
@@ -23,8 +24,16 @@ describe('remove', () => {
 
       const next = jest.fn();
 
+      const eventEmitter = new BoilerplateEventEmitter();
+      const eventCallback = jest.fn();
+
+      eventEmitter.once('leave', eventCallback);
+
       return remove
-        .removeCallbackRH({ botname: 'test-bot' } as StartServerOptions)(
+        .removeCallbackRH({
+          botname: 'test-bot',
+          eventEmitter,
+        } as StartServerOptions)(
           ({
             query: { code: 'test' },
           } as unknown) as Request,
@@ -40,6 +49,7 @@ describe('remove', () => {
             login: 'fosefx',
           });
           expect(next).not.toHaveBeenCalled();
+          expect(eventCallback).toHaveBeenCalled();
         });
     });
   });
