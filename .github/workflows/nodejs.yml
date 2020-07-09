@@ -12,6 +12,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+      with:
+        persist-credentials: false # otherwise, the token used is the GITHUB_TOKEN, instead of your personal token
+        fetch-depth: 0
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
@@ -43,7 +46,14 @@ jobs:
           node-version: 12.x
       - run: npm ci
       - run: npm run gendocs
+      - name: Commit files
+        run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add docs
+        git commit -m "New docs"
       - name: Push changes
-        uses: actions-go/push@v1
+        uses: ad-m/github-push-action@master
         with:
-          remote-ref: refs/heads/docs
+          branch: "docs"
+          github_token: ${{ secrets.GITHUB_TOKEN }}
