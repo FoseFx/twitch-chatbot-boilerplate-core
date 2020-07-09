@@ -1,6 +1,8 @@
 import { Express } from 'express';
+import { BoilerplateEventEmitter } from '../event';
 
 export interface StartServerOptions {
+  eventEmitter: BoilerplateEventEmitter;
   host: string;
   port: number;
   botname: string;

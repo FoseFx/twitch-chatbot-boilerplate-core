@@ -14,14 +14,22 @@ export function addCallbackRH(options: StartServerOptions): RequestHandler {
   ): Promise<void> {
     const { code } = req.query;
 
+    let authData;
+    let basicProfile;
+
     return obtainAccessToken(
       options,
       code as string,
       `${options.host}/setup/callback`,
     )
+      .then((auth: AuthData) => (authData = auth))
       .then((auth: AuthData) => getBasicProfileInfo(options, auth))
+      .then((profile: BasicProfile) => (basicProfile = profile))
       .then((profile: BasicProfile) => joinChannel(profile.login))
       .then((login) => res.render('add_success', { botname, login }))
+      .then(() =>
+        options.eventEmitter.emitEvent('join', { authData, basicProfile }),
+      )
       .catch((e) => next(e));
   };
 }

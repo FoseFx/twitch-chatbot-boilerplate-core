@@ -7,6 +7,7 @@ import {
   BasicProfile,
   TokenResponse,
 } from '../../../src/core/server/server.types';
+import { BoilerplateEventEmitter } from '../../../src/core/event';
 
 describe('add', () => {
   describe('addCallbackRH', () => {
@@ -22,9 +23,16 @@ describe('add', () => {
       const res = ({ render: jest.fn() } as unknown) as Response;
 
       const next = jest.fn();
+      const eventEmitter = new BoilerplateEventEmitter();
+      const eventCallback = jest.fn();
+
+      eventEmitter.once('join', eventCallback);
 
       return add
-        .addCallbackRH({ botname: 'test-bot' } as StartServerOptions)(
+        .addCallbackRH({
+          botname: 'test-bot',
+          eventEmitter,
+        } as StartServerOptions)(
           ({
             query: { code: 'test' },
           } as unknown) as Request,
@@ -40,6 +48,7 @@ describe('add', () => {
             login: 'fosefx',
           });
           expect(next).not.toHaveBeenCalled();
+          expect(eventCallback).toHaveBeenCalled();
         });
     });
   });
