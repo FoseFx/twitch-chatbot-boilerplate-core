@@ -4,6 +4,7 @@
 [![Test Coverage](https://api.codeclimate.com/v1/badges/8ee259e1ace1b4f7b5aa/test_coverage)](https://codeclimate.com/github/FoseFx/twitch-chatbot-boilerplate-core/test_coverage)
 
 # twitch-chatbot-boilerplate-core
+## [API DOCS][api-docs]
 
 > This project is not affiliated to Twitch Interactive Inc in any way.
 
@@ -77,3 +78,4 @@ Licensed under the Unlicense. See the [LICENSE](https://github.com/fosefx/twitch
 [limits]: https://dev.twitch.tv/docs/irc/guide#command--message-limits
 [verifydocs]: https://dev.twitch.tv/docs/irc/guide#known-and-verified-bots
 [caveats]: https://github.com/FoseFx/twitch-chatbot-boilerplate/wiki/Caveats
+[api-docs]: https://fosefx.github.io/twitch-chatbot-boilerplate-core/docs/index.html
