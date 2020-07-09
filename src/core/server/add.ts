@@ -3,7 +3,10 @@ import { RequestHandler, Request, Response, NextFunction } from 'express';
 import { obtainAccessToken, getBasicProfileInfo } from './auth';
 import { joinChannel } from '../bot/bot';
 
-/** /add/callback RequestHandler */
+/**
+ * /add/callback RequestHandler
+ * @internal
+ * */
 export function addCallbackRH(options: StartServerOptions): RequestHandler {
   const { botname } = options;
 

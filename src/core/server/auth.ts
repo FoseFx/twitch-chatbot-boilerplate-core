@@ -12,6 +12,7 @@ import { ensureFetchIsOk } from './util';
 
 /**
  * Converts array of scope strings to a list usable in URLs
+ * @internal
  */
 export function scopesToString(scopes: string[]): string {
   let string = '';
@@ -22,7 +23,10 @@ export function scopesToString(scopes: string[]): string {
   return string.substr(0, string.length - 1); // remove last " "
 }
 
-/** Generates the Twitch-Authwall-URL */
+/**
+ * Generates the Twitch-Authwall-URL
+ * @internal
+ * */
 export function getOAuthUrl(
   opts: StartServerOptions,
   scopes: string[],
@@ -44,7 +48,10 @@ export function getOAuthUrl(
   return redirectURL;
 }
 
-/** The RequestHandler that handles /setup/callback */
+/**
+ * The RequestHandler that handles /setup/callback
+ * @internal
+ * */
 export function setupCallback(options: StartServerOptions): RequestHandler {
   return function (
     req: Request,
@@ -65,6 +72,7 @@ export function setupCallback(options: StartServerOptions): RequestHandler {
   };
 }
 
+/** @internal */
 export function obtainAccessToken(
   opts: StartServerOptions,
   code: string,
@@ -85,6 +93,7 @@ export function obtainAccessToken(
     .then((resp: FetchResponse) => resp.json());
 }
 
+/** @internal */
 export async function refreshAccessToken(
   options: StartServerOptions,
   authData: AuthData,
@@ -116,6 +125,7 @@ export async function refreshAccessToken(
   return json;
 }
 
+/** @internal */
 export function getBasicProfileInfo(
   options: StartServerOptions,
   authData: AuthData,
@@ -132,6 +142,7 @@ export function getBasicProfileInfo(
     .then((json) => json.data[0]);
 }
 
+/** @internal */
 export const _this = {
   obtainAccessToken,
   scopesToString,

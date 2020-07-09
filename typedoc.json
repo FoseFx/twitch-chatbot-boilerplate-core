@@ -1,0 +1,12 @@
+{
+  "out": "docs",
+  "gitRemote": "https://github.com/fosefx/twitch-chatbot-boilerplate-core",
+  "disableSources": true,
+  "exclude": ["**/util/*.ts", "**/__tests__/**/*"],
+  "excludeNotExported": true,
+  "excludeProtected": true,
+  "excludePrivate": true,
+  "includeVersion": true,
+  "stripInternal": true,
+  "inputFiles": "src"
+}

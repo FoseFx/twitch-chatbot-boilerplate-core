@@ -13,6 +13,7 @@ import { hasValidToken, onlyWhenSetup, hasCodeQuery } from './util';
 import { addCallbackRH } from './add';
 import { removeCallbackRH } from './remove';
 
+/** @internal */
 export function setUpRoutes(
   app: Express,
   startOptions: StartServerOptions,
@@ -65,11 +66,15 @@ export function setUpRoutes(
   app.use(_this.errorpage);
 }
 
+/** @internal */
 export function home(_req: Request, res: Response): void {
   res.redirect('/add');
 }
 
-/** Using this route the owner can connect the bot's twitch account with the bot */
+/**
+ * Using this route the owner can connect the bot's twitch account with the bot
+ * @internal
+ * */
 export function setup(startOptions: StartServerOptions): RequestHandler {
   return function (_req: Request, res: Response): void {
     if (isSetupYet()) {
@@ -87,7 +92,10 @@ export function setup(startOptions: StartServerOptions): RequestHandler {
   };
 }
 
-/** Using this route streamers can add/remove the bot to/from their chat */
+/**
+ * Using this route streamers can add/remove the bot to/from their chat
+ * @internal
+ * */
 export function typicalRequestHandler(
   type: 'add' | 'remove',
   startOptions: StartServerOptions,
@@ -103,6 +111,7 @@ export function typicalRequestHandler(
   };
 }
 
+/** @internal */
 export function notfound(_req: Request, res: Response): void {
   res.status(404).render('error', {
     heading: '404 - Not Found',
@@ -110,6 +119,7 @@ export function notfound(_req: Request, res: Response): void {
   });
 }
 
+/** @internal */
 export function errorpage(
   error: Error,
   _req: Request,
@@ -125,6 +135,7 @@ export function errorpage(
   throw error;
 }
 
+/** @internal */
 export const _this = {
   setUpRoutes,
   home,

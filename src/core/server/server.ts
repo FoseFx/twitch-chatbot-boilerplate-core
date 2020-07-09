@@ -11,7 +11,7 @@ import { newExpressApp, verifyFilesExist } from './util';
  *
  * 1. the connection between your bot and your bot's Twitch account and
  * 2. allowing streamers to "invite" your bot to their chat
- *
+ * @internal
  */
 export async function startServer(
   options: StartServerOptions,

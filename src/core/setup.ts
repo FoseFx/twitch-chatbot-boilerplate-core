@@ -8,15 +8,19 @@ import {
 import { startBot } from './bot/bot';
 import { ensureDirExists } from './util';
 
+/** @internal */
 const AUTH_PATH = './.config/auth.json';
-
+/** @internal */
 let _isSetupYet = false;
+/** @internal */
 let _otp = '';
 
+/** @internal */
 export function isSetupYet(): boolean {
   return _isSetupYet;
 }
 
+/** @internal */
 export function getOTP(): string {
   return _otp;
 }
@@ -24,6 +28,7 @@ export function getOTP(): string {
 /**
  * This function checks if OAuth credentials were already obtained, if so returns them.
  * If not it starts set setup proccess and prompts the user
+ * @internal
  */
 export async function setup(
   opts: StartServerOptions,
@@ -56,6 +61,7 @@ export async function setup(
   return null;
 }
 
+/** @internal */
 export async function finishSetup(
   options: StartServerOptions,
   token: TokenResponse,
@@ -65,6 +71,7 @@ export async function finishSetup(
   startBot(options, token);
 }
 
+/** @internal */
 export function writeToDisk(token: TokenResponse): void {
   const dir = './.config';
   ensureDirExists(dir);
@@ -86,6 +93,7 @@ export function writeToDisk(token: TokenResponse): void {
 
 /**
  * Reads OAuth data from disk and returns it
+ * @internal
  */
 export function readFromDisk(): AuthData | null {
   try {
@@ -97,7 +105,10 @@ export function readFromDisk(): AuthData | null {
   }
 }
 
-/** Used so we can stub the functions */
+/** 
+ * Used so we can stub the functions
+ * @internal
+ * */
 export const _this = {
   writeToDisk,
   readFromDisk,

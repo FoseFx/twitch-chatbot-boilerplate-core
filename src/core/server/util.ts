@@ -11,12 +11,14 @@ import {
 import { getOTP, isSetupYet } from '../setup';
 import { isBotRunning } from '../bot/bot';
 
+/** @internal */
 export function newExpressApp(): Express {
   return express();
 }
 /**
  * This middleware ensures only the admin with the correct token can access the resource.
  * It also sets the cookie, in case there is none
+ * @internal
  * */
 export function hasValidToken(medium: 'query' | 'cookies'): RequestHandler {
   return function (req: Request, res: Response, next: NextFunction): void {
@@ -35,6 +37,7 @@ export function hasValidToken(medium: 'query' | 'cookies'): RequestHandler {
   };
 }
 
+/** @internal */
 export function onlyWhenSetup(
   _req: Request,
   res: Response,
@@ -51,7 +54,10 @@ export function onlyWhenSetup(
   });
 }
 
-/** Makes sure the code query parameter is set */
+/**
+ * Makes sure the code query parameter is set
+ * @internal
+ * */
 export function hasCodeQuery(
   req: Request,
   res: Response,
@@ -69,6 +75,7 @@ export function hasCodeQuery(
   next();
 }
 
+/** @internal */
 export async function ensureFetchIsOk(
   resp: FetchResponse,
 ): Promise<FetchResponse> {
@@ -91,6 +98,7 @@ export async function ensureFetchIsOk(
     });
 }
 
+/** @internal */
 export function extractFetchErrorMessage(json: {
   status?: number;
   message?: string;
@@ -104,6 +112,7 @@ export function extractFetchErrorMessage(json: {
   return JSON.stringify(json);
 }
 
+/** @internal */
 export function verifyFilesExist(): void {
   const files = [
     'views/add.ejs',

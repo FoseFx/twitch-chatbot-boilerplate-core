@@ -35,6 +35,9 @@ export interface InitializeObject {
   boilerplate: BoilerplateEventEmitter;
 }
 
+/**
+ * @public
+ */
 export function initialize(
   initializeOptions: InitializeOptions = {},
 ): Promise<InitializeObject> {

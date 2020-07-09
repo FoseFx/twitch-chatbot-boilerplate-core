@@ -1,5 +1,6 @@
 import * as dotenv from 'dotenv';
 
+/** @internal */
 export function loadEnvVariables(): void {
   dotenv.config();
 

@@ -3,7 +3,10 @@ import { obtainAccessToken, getBasicProfileInfo } from './auth';
 import { StartServerOptions, AuthData, BasicProfile } from './server.types';
 import { leaveChannel } from '../bot/bot';
 
-/** /add/callback RequestHandler */
+/**
+ * /remove/callback RequestHandler
+ * @internal
+ * */
 export function removeCallbackRH(options: StartServerOptions): RequestHandler {
   const { botname } = options;
 

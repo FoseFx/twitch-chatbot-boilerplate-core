@@ -5,9 +5,12 @@ import { refreshAccessToken } from '../server/auth';
 import { getClientReadyEmitter } from '../event';
 import { ensureDirExists } from '../util';
 
+/** @internal */
 let _client: Client | null = null;
+/** @internal */
 let _channels: string[] = [];
 
+/** @internal **/
 export async function startBot(
   options: StartServerOptions,
   authData: AuthData | null,
@@ -25,7 +28,13 @@ export async function startBot(
 }
 
 /**
+ * @public
  * @return {Promise<string>} - the channel the bot has joined
+ * @example
+ * ```
+ * import { joinChannel } from 'twitch-chatbot-boilerplate';
+ * await joinChannel("fosefx");
+ * ```
  */
 export async function joinChannel(channel: string): Promise<string> {
   if (_channels.includes(channel)) {
@@ -40,7 +49,13 @@ export async function joinChannel(channel: string): Promise<string> {
 }
 
 /**
+ * @public
  * @return {Promise<string>} - the channel the bot has left
+ * @example
+ * ```
+ * import { leaveChannel } from 'twitch-chatbot-boilerplate';
+ * await leaveChannel("fosefx");
+ * ```
  */
 export async function leaveChannel(channel: string): Promise<string> {
   return _client.part(channel).then(() => {
@@ -50,6 +65,7 @@ export async function leaveChannel(channel: string): Promise<string> {
   });
 }
 
+/** @internal */
 export async function _createNewClient(
   options: StartServerOptions,
   authData: AuthData,
@@ -75,10 +91,12 @@ export async function _createNewClient(
     .catch((e) => _this._handleConnectError(options, authData, e));
 }
 
+/** @internal */
 export function isBotRunning(): boolean {
   return !!_client;
 }
 
+/** @internal */
 export async function _handleConnectError(
   opts: StartServerOptions,
   authData: AuthData,
@@ -91,6 +109,7 @@ export async function _handleConnectError(
   }
 }
 
+/** @internal */
 export function _handleAuthError(
   opts: StartServerOptions,
   authData: AuthData,
@@ -100,12 +119,14 @@ export function _handleAuthError(
   );
 }
 
+/** @internal */
 export function _storeChannelsOnDisk(): void {
   const dir = './.config';
   ensureDirExists(dir);
   fs.writeFileSync(dir + '/channels.json', JSON.stringify(_channels));
 }
 
+/** @internal */
 export function _readChannelsFromDisk(): string[] {
   const dir = './.config';
   ensureDirExists(dir);
@@ -117,14 +138,17 @@ export function _readChannelsFromDisk(): string[] {
   }
 }
 
+/** @internal */
 export function _setClient(cl: Client): void {
   _client = cl;
 }
 
+/** @internal */
 export function _setChannels(ch: string[]): void {
   _channels = ch;
 }
 
+/** @internal */
 export const _this = {
   startBot,
   joinChannel,
