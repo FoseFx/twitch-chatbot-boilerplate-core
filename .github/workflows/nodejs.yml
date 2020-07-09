@@ -52,7 +52,6 @@ jobs:
           git config --local user.name "GitHub Action"
           git add docs -f
           git commit -m "New docs"
-      - run: git log
       - name: Push changes
         uses: ad-m/github-push-action@master
         with:
