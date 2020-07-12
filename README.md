@@ -4,13 +4,13 @@
 [![Test Coverage](https://api.codeclimate.com/v1/badges/8ee259e1ace1b4f7b5aa/test_coverage)](https://codeclimate.com/github/FoseFx/twitch-chatbot-boilerplate-core/test_coverage)
 
 # twitch-chatbot-boilerplate-core
-## [API DOCS][api-docs]
+## [API DOCS][api-docs] | [Wiki][wiki]
 
 > This project is not affiliated to Twitch Interactive Inc in any way.
 
 ## Read this first
 
-This package should only be used directly when you don't seek for a full boilerplate as it only exports the `initialize` function.
+This package should only be used directly when you don't seek for a full boilerplate as it only exports the [initialize()][initialize-api] function.
 It is recommended for new projects to use the [main repo as a boilerplate][boilerplate].
 
 ## How does it work?
@@ -23,7 +23,7 @@ It is recommended for new projects to use the [main repo as a boilerplate][boile
 3. Create a `.env` file ([download an example here][env-example]) and enter all necessary information, alternatively you can use any other way of setting an environment variable
 4. Download or create your own [views directory][views-dl]. If you choose to download it, download the [public directory][public-dl] aswell.
 
-5. Call `initialize()` and follow further instructions
+5. Call [initialize()][initialize-api] and follow further instructions
 
 ```JavaScript
 const { initialize } = require('twitch-chatbot-boilerplate');
@@ -49,6 +49,7 @@ main().catch((e) => console.error(e));
 ## Next Steps
 
 - Read the [tmi.js docs][tmijsdocs]
+- Read the [API docs][api-docs]
 - Read more about [commands and message limits][limits]
 - Get your bot [known and verified][verifydocs]
 
@@ -68,6 +69,8 @@ See [wiki][caveats].
 
 Licensed under the Unlicense. See the [LICENSE](https://github.com/fosefx/twitch-chatbot-boilerplate-core/blob/master/LICENSE) file for details.
 
+[wiki]: https://github.com/FoseFx/twitch-chatbot-boilerplate/wiki
+[initialize-api]: https://fosefx.github.io/twitch-chatbot-boilerplate-core/docs/modules/_core_.html#initialize
 [boilerplate]: https://github.com/FoseFx/twitch-chatbot-boilerplate/
 [views-dl]: https://downgit.github.io/#/home?url=https://github.com/FoseFx/twitch-chatbot-boilerplate/tree/master/views
 [public-dl]: https://downgit.github.io/#/home?url=https://github.com/FoseFx/twitch-chatbot-boilerplate/tree/master/public
