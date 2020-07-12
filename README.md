@@ -15,7 +15,7 @@ It is recommended for new projects to use the [main repo as a boilerplate][boile
 
 ## How does it work?
 
-> Read the [main repo's setup guide][boilerplate] first, register an app and create a new account.
+> Read the [main repo's setup guide][setup-full] first, register an app and create a new account.
 
 1. Install this package: `npm i twitch-chatbot-boilerplate`
 
@@ -46,12 +46,7 @@ main().catch((e) => console.error(e));
 8. Deploy it
 9. **Profit**
 
-## Next Steps
-
-- Read the [tmi.js docs][tmijsdocs]
-- Read the [API docs][api-docs]
-- Read more about [commands and message limits][limits]
-- Get your bot [known and verified][verifydocs]
+[Next Steps][next-steps]
 
 ## Caveats
 See [wiki][caveats].
@@ -82,3 +77,5 @@ Licensed under the Unlicense. See the [LICENSE](https://github.com/fosefx/twitch
 [verifydocs]: https://dev.twitch.tv/docs/irc/guide#known-and-verified-bots
 [caveats]: https://github.com/FoseFx/twitch-chatbot-boilerplate/wiki/Caveats
 [api-docs]: https://fosefx.github.io/twitch-chatbot-boilerplate-core/docs/index.html
+[setup-full]: https://github.com/FoseFx/twitch-chatbot-boilerplate/wiki/Setup#setup-full
+[next-steps]: https://github.com/FoseFx/twitch-chatbot-boilerplate/wiki/Setup#next-steps
