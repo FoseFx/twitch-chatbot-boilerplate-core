@@ -59,6 +59,7 @@ See [wiki][caveats].
 - `lint` - run the linter,
 - `test` - run the tests,
 - `test:watch` - executes `test` on every file change
+- `gendocs` - build API docs
 
 ## License
 

@@ -17,6 +17,8 @@ export declare interface BoilerplateEventEmitter {
 
 /**
  * Emits events 'join' and 'leave', see {@link BoilerplateEventEmitter.on | on()}
+ * 
+ * [Wiki](https://github.com/FoseFx/twitch-chatbot-boilerplate/wiki/Caveats#on-join-and-part)
  * @public
  */ export class BoilerplateEventEmitter extends EventEmitter {
   emitEvent(type: 'join' | 'leave', obj: AuthDataAndBasicProfile): void {

@@ -103,6 +103,7 @@ describe('routes', () => {
     const opts = {
       botname: 'Hey-Bot',
       host: 'http://localhost:8080',
+      scopes: ['test:scopes'],
     } as StartServerOptions;
     const exp = {
       botname: 'Hey-Bot',
@@ -126,11 +127,11 @@ describe('routes', () => {
       expect(res.render).toHaveBeenCalledWith('add', exp);
       expect(getOAuthUrlSpy).toHaveBeenCalledWith(
         opts,
-        [],
+        ['test:scopes'],
         'http://localhost:8080/add/callback',
       );
     });
-    it('should render remove', () => {
+    it('should render remove with custom scopes', () => {
       typicalRequestHandler('remove', opts)({} as Request, res, null);
       expect(res.render).toHaveBeenCalledWith('remove', exp);
       expect(getOAuthUrlSpy).toHaveBeenCalledWith(

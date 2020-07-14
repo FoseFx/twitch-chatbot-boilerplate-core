@@ -104,7 +104,7 @@ export function typicalRequestHandler(
   return function (_req: Request, res: Response): void {
     const twitchURL = getOAuthUrl(
       startOptions,
-      [],
+      type === 'remove' ? [] : startOptions.scopes,
       `${startOptions.host}/${type}/callback`,
     );
     res.render(type, { botname, twitchURL });
