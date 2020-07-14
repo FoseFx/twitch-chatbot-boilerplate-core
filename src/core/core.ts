@@ -66,6 +66,26 @@ export interface InitializeObject {
 }
 
 /**
+ * The heart of this package,
+ * read more in the [Setup Guide](https://github.com/FoseFx/twitch-chatbot-boilerplate-core#how-does-it-work)
+ *
+ * @example
+ * ```TypeScript
+ * const { initialize } = require('twitch-chatbot-boilerplate');
+ *
+ * async function main() {
+ *     const { client } = await initialize();
+ *
+ *     // This is the example on the tmi.js website
+ *     client.on('message', (channel, userstate, message, self) => {
+ *         if (self) return;
+ *         if (message.toLowerCase() === '!hello') {
+ *             client.say(channel, `@${userstate.username}, heya!`);
+ *         }
+ *     });
+ * }
+ * main().catch((e) => console.error(e));
+ * ```
  * @public
  */
 export function initialize(
