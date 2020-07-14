@@ -38,4 +38,6 @@ export interface BasicProfile {
   offline_image_url: string;
   view_count: number;
   provider: 'twitch';
+  /** Only set when the 'user:read:email' scope was requested in {@link initialize | initialize} */
+  email?: string;
 }

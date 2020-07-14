@@ -1,3 +1,9 @@
+/**
+ * This is your entrypoint to the boilerplate-core,
+ * check out the [Setup Guide](https://github.com/FoseFx/twitch-chatbot-boilerplate-core#how-does-it-work) to get started
+ * @packageDocumentation
+ */
+
 import { Express } from 'express';
 import { Client } from 'tmi.js';
 import { EventEmitter } from 'events';
@@ -27,13 +33,35 @@ export interface InitializeOptions {
   app?: Express;
   /** This hook gets called before the routes are added to the express app */
   beforeRouteSetup?: (app: Express) => void;
-  /** Ask the streamer for more permissions, see https://dev.twitch.tv/docs/authentication#scopes */
+  /**
+   * Ask the streamer for more permissions,
+   * you can recieve the token using the {@link InitializeObject.boilerplate | boilerplate events}
+   *
+   * More on scopes: https://dev.twitch.tv/docs/authentication#scopes
+   *
+   * @example
+   * ```TypeScript
+   * const { client, boilerplate } = await initialize({
+   *  scopes: ['channel:read:hype_train', 'user:read:email']
+   * });
+   *
+   * boilerplate.on('join', async ({ authData, basicProfile }) => {
+   *   await sendVerificationEmail(basicProfile.email);
+   *   addListenerForHypeTrain(authData.access_token);
+   * })
+   * ```
+   *
+   * */
   scopes?: string[];
 }
 
 export interface InitializeObject {
   client: Client;
   app: Express;
+  /**
+   * You can use this EventEmitter to listen to events like 'join' and 'leave',
+   * read about it in the [Wiki](https://github.com/FoseFx/twitch-chatbot-boilerplate/wiki/Caveats#on-join-and-part)
+   * */
   boilerplate: BoilerplateEventEmitter;
 }
 
