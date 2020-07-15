@@ -12,6 +12,13 @@ describe('Server', () => {
   let useMock;
   let setMock;
   let listenMock;
+
+  const app = ({
+    use: jest.fn(),
+    set: jest.fn(),
+    listen: jest.fn(),
+  } as unknown) as Express;
+
   beforeEach(() => {
     consoleMock = jest.spyOn(console, 'log');
     routesMock = jest.spyOn(routes, 'setUpRoutes').mockReturnValue(undefined);
@@ -43,6 +50,26 @@ describe('Server', () => {
       expect(consoleMock).toHaveBeenCalledWith(
         'HTTP-Server listening on port 6969',
       );
+    });
+    it('should still listen even when listen: false, but no app provided', () => {
+      server.startServer({ port: 6969, listen: false } as StartServerOptions);
+      expect(listenMock).toHaveBeenCalled();
+    });
+    it('should not listen when listen: false and app provided', () => {
+      server.startServer({
+        port: 6969,
+        listen: false,
+        app,
+      } as StartServerOptions);
+      expect(app.listen).not.toHaveBeenCalled();
+    });
+    it('should listen when listen: true and app provided', () => {
+      server.startServer({
+        port: 6969,
+        listen: true,
+        app,
+      } as StartServerOptions);
+      expect(app.listen).toHaveBeenCalled();
     });
   });
 });

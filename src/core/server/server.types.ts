@@ -11,6 +11,7 @@ export interface StartServerOptions {
   setupScopes: string[];
   scopes: string[] /** set by the developer */;
   app?: Express;
+  listen: boolean;
   beforeRouteSetup?: (app: Express) => void;
 }
 

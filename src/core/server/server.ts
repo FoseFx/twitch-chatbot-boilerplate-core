@@ -23,9 +23,11 @@ export async function startServer(
 
   setUpRoutes(app, options);
 
-  app.listen(options.port, () =>
-    console.log(`HTTP-Server listening on port ${options.port}`),
-  );
+  if (options.listen || !options.app) {
+    app.listen(options.port, () =>
+      console.log(`HTTP-Server listening on port ${options.port}`),
+    );
+  }
 
   return app;
 }

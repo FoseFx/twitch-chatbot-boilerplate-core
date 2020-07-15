@@ -26,11 +26,16 @@ export interface InitializeOptions {
   /**
    * You can use an existing Express instance
    *
-   * Note: initialize() will call app.listen()
    * Note: initialize() will change the view engine to ejs
    * Note: initialize() will add the cookieParser middelware
    * */
   app?: Express;
+  /**
+   * Only relevant when an express app is provided using {@link InitializeOptions.app},
+   * Bind passed express app to env.PORT
+   * @default true
+   * */
+  listen?: boolean;
   /** This hook gets called before the routes are added to the express app */
   beforeRouteSetup?: (app: Express) => void;
   /**
@@ -105,6 +110,7 @@ export function initialize(
       scopes: initializeOptions.scopes ?? [],
       beforeRouteSetup: initializeOptions.beforeRouteSetup,
       app: initializeOptions.app,
+      listen: initializeOptions.listen ?? true,
     };
 
     // after the bot is ready the "clientReady" event is fired on this one
