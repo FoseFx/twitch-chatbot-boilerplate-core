@@ -28,6 +28,7 @@ coverage
 .env
 .config
 
+docs
 src
 __tests__
 
