@@ -7,11 +7,16 @@ import {
 } from 'express';
 import * as express from 'express';
 import { isSetupYet } from '../setup';
-import { StartServerOptions } from './server.types';
-import { getOAuthUrl, setupCallback } from './auth';
+import { StartServerOptions, AuthData } from './server.types';
+import {
+  getOAuthUrl,
+  setupCallback,
+  obtainAccessToken,
+  getBasicProfileInfo,
+} from './auth';
 import { hasValidToken, onlyWhenSetup, hasCodeQuery } from './util';
-import { addCallbackRH } from './add';
-import { removeCallbackRH } from './remove';
+import { BasicProfile } from '../core';
+import { joinChannel, leaveChannel } from '../bot/bot';
 
 /** @internal */
 export function setUpRoutes(
@@ -33,7 +38,7 @@ export function setUpRoutes(
     '/add/callback',
     onlyWhenSetup,
     hasCodeQuery,
-    addCallbackRH(startOptions),
+    _this.callbackRequestHandler('add', startOptions),
   );
 
   // Remove
@@ -46,7 +51,7 @@ export function setUpRoutes(
     '/remove/callback',
     onlyWhenSetup,
     hasCodeQuery,
-    removeCallbackRH(startOptions),
+    _this.callbackRequestHandler('remove', startOptions),
   );
 
   // Setup
@@ -111,6 +116,47 @@ export function typicalRequestHandler(
   };
 }
 
+/**
+ * /add/callback and /remove/callback RequestHandler
+ * @internal
+ * */
+export function callbackRequestHandler(
+  type: 'add' | 'remove',
+  options: StartServerOptions,
+): RequestHandler {
+  const { botname } = options;
+
+  const action = type === 'add' ? joinChannel : leaveChannel;
+  const okView = type === 'add' ? 'add_success' : 'remove_success';
+  const eventName = type === 'add' ? 'join' : 'leave';
+
+  return function (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    const { code } = req.query;
+
+    let authData;
+    let basicProfile;
+
+    return obtainAccessToken(
+      options,
+      code as string,
+      `${options.host}/setup/callback`,
+    )
+      .then((auth: AuthData) => (authData = auth))
+      .then((auth: AuthData) => getBasicProfileInfo(options, auth))
+      .then((profile: BasicProfile) => (basicProfile = profile))
+      .then((profile: BasicProfile) => action(profile.login))
+      .then((login) => res.render(okView, { botname, login }))
+      .then(() =>
+        options.eventEmitter.emitEvent(eventName, { authData, basicProfile }),
+      )
+      .catch((e) => next(e));
+  };
+}
+
 /** @internal */
 export function notfound(_req: Request, res: Response): void {
   res.status(404).render('error', {
@@ -143,4 +189,5 @@ export const _this = {
   typicalRequestHandler,
   notfound,
   errorpage,
+  callbackRequestHandler,
 };

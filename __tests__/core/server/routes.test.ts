@@ -2,12 +2,18 @@ import { Express, Request, Response } from 'express';
 import {
   _this as routes,
   typicalRequestHandler,
+  callbackRequestHandler,
 } from '../../../src/core/server/routes';
 import * as auth from '../../../src/core/server/auth';
-import * as add from '../../../src/core/server/add';
-import * as remove from '../../../src/core/server/remove';
 import * as setup from '../../../src/core/setup';
-import { StartServerOptions } from '../../../src/core/server/server.types';
+import * as bot from '../../../src/core/bot/bot';
+
+import {
+  StartServerOptions,
+  TokenResponse,
+  BasicProfile,
+} from '../../../src/core/server/server.types';
+import { BoilerplateEventEmitter } from '../../../src/core/core';
 
 describe('routes', () => {
   describe('setup', () => {
@@ -62,8 +68,12 @@ describe('routes', () => {
       jest.spyOn(routes, 'typicalRequestHandler').mockImplementation((type) => {
         return type === 'add' ? addHandler : removeHandler;
       });
-      jest.spyOn(add, 'addCallbackRH').mockReturnValue(addCbHandler);
-      jest.spyOn(remove, 'removeCallbackRH').mockReturnValue(removeCbHandler);
+      jest
+        .spyOn(routes, 'callbackRequestHandler')
+        .mockImplementation((type) => {
+          return type === 'add' ? addCbHandler : removeCbHandler;
+        });
+
       jest.spyOn(routes, 'setup').mockReturnValue(setupHandler);
       jest.spyOn(auth, 'setupCallback').mockReturnValue(setupCbHandler);
 
@@ -139,6 +149,89 @@ describe('routes', () => {
         [],
         'http://localhost:8080/remove/callback',
       );
+    });
+  });
+
+  describe('callbackRequestHandler: remove', () => {
+    it('should leave channel', () => {
+      const oATSpy = jest
+        .spyOn(auth, 'obtainAccessToken')
+        .mockResolvedValue({} as TokenResponse);
+      const gBPISpy = jest
+        .spyOn(auth, 'getBasicProfileInfo')
+        .mockResolvedValue({} as BasicProfile);
+      const lCSpy = jest.spyOn(bot, 'leaveChannel').mockResolvedValue('fosefx');
+
+      const res = ({ render: jest.fn() } as unknown) as Response;
+
+      const next = jest.fn();
+
+      const eventEmitter = new BoilerplateEventEmitter();
+      const eventCallback = jest.fn();
+
+      eventEmitter.once('leave', eventCallback);
+
+      return callbackRequestHandler('remove', {
+        botname: 'test-bot',
+        eventEmitter,
+      } as StartServerOptions)(
+        ({
+          query: { code: 'test' },
+        } as unknown) as Request,
+        res,
+        next,
+      ).then(() => {
+        expect(oATSpy).toHaveBeenCalled();
+        expect(gBPISpy).toHaveBeenCalled();
+        expect(lCSpy).toHaveBeenCalled();
+        expect(res.render).toHaveBeenCalledWith('remove_success', {
+          botname: 'test-bot',
+          login: 'fosefx',
+        });
+        expect(next).not.toHaveBeenCalled();
+        expect(eventCallback).toHaveBeenCalled();
+      });
+    });
+  });
+
+  describe('callbackRequestHandler: add', () => {
+    it('should join channel', () => {
+      const oATSpy = jest
+        .spyOn(auth, 'obtainAccessToken')
+        .mockResolvedValue({} as TokenResponse);
+      const gBPISpy = jest
+        .spyOn(auth, 'getBasicProfileInfo')
+        .mockResolvedValue({} as BasicProfile);
+      const jCSpy = jest.spyOn(bot, 'joinChannel').mockResolvedValue('fosefx');
+
+      const res = ({ render: jest.fn() } as unknown) as Response;
+
+      const next = jest.fn();
+      const eventEmitter = new BoilerplateEventEmitter();
+      const eventCallback = jest.fn();
+
+      eventEmitter.once('join', eventCallback);
+
+      return callbackRequestHandler('add', {
+        botname: 'test-bot',
+        eventEmitter,
+      } as StartServerOptions)(
+        ({
+          query: { code: 'test' },
+        } as unknown) as Request,
+        res,
+        next,
+      ).then(() => {
+        expect(oATSpy).toHaveBeenCalled();
+        expect(gBPISpy).toHaveBeenCalled();
+        expect(jCSpy).toHaveBeenCalled();
+        expect(res.render).toHaveBeenCalledWith('add_success', {
+          botname: 'test-bot',
+          login: 'fosefx',
+        });
+        expect(next).not.toHaveBeenCalled();
+        expect(eventCallback).toHaveBeenCalled();
+      });
     });
   });
 });
