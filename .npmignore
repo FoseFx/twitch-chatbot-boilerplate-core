@@ -45,5 +45,6 @@ views
 public
 .env.example
 jest.config.js
+typedoc.json
 tsconfig.json
 tsconfig.release.json
