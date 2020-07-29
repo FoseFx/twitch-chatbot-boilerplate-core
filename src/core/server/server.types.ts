@@ -1,4 +1,5 @@
 import { Express } from 'express';
+import { Options as TmiOptions } from 'tmi.js';
 import { BoilerplateEventEmitter } from '../event';
 
 export interface StartServerOptions {
@@ -13,6 +14,7 @@ export interface StartServerOptions {
   app?: Express;
   listen: boolean;
   beforeRouteSetup?: (app: Express) => void;
+  tmiOptions?: TmiOptions;
 }
 
 export interface AuthData {

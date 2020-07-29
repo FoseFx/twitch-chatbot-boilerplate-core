@@ -68,7 +68,7 @@ export async function finishSetup(
 ): Promise<void> {
   _this.writeToDisk(token);
   _isSetupYet = true;
-  startBot(options, token);
+  startBot(options, options.tmiOptions, token);
 }
 
 /** @internal */
@@ -105,7 +105,7 @@ export function readFromDisk(): AuthData | null {
   }
 }
 
-/** 
+/**
  * Used so we can stub the functions
  * @internal
  * */

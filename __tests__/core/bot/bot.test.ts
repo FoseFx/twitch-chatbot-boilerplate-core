@@ -5,7 +5,7 @@ import {
   StartServerOptions,
   AuthData,
 } from '../../../src/core/server/server.types';
-import { Client } from 'tmi.js';
+import { Client, Options as TmiOptions } from 'tmi.js';
 import * as clientReadyEventEmitter from '../../../src/core/event';
 import * as tmijs from 'tmi.js';
 import { EventEmitter } from 'events';
@@ -82,7 +82,7 @@ describe('bot.ts', () => {
       jest.spyOn(tmijs, 'Client').mockReturnValue(cl);
       const hCESpy = jest.spyOn(bot, '_handleConnectError');
 
-      await bot._createNewClient(opts, authData);
+      await bot._createNewClient(opts, undefined, authData);
       expect(hCESpy).not.toHaveBeenCalled();
     });
 
@@ -99,17 +99,54 @@ describe('bot.ts', () => {
           return Promise.reject(error);
         });
 
-      return bot._createNewClient(opts, authData).catch((error) => {
+      return bot._createNewClient(opts, undefined, authData).catch((error) => {
         expect(error).toEqual('somerror');
         expect(hCESpy).toHaveBeenCalled();
       });
     });
+
+    it('should merge options', async () => {
+      const cl = ({
+        connect: jest.fn().mockResolvedValue(undefined),
+      } as unknown) as Client;
+
+      const customOptions: TmiOptions = {
+        options: {
+          debug: false
+        },
+        connection: {
+          maxReconnectAttempts: 5
+        }
+      };
+      const expectedOptions: TmiOptions = {
+        options: {
+          debug: false,
+        },
+        connection: {
+          secure: true,
+          reconnect: true,
+          maxReconnectAttempts: 5
+        },
+        identity: {
+          username: opts.clientId,
+          password: authData.access_token,
+        },
+      };
+
+      jest.spyOn(tmijs, 'Client').mockImplementation((options) => {
+        expect(options).toEqual(expectedOptions);
+        return cl;
+      });
+    
+      await bot._createNewClient(opts, customOptions, authData);
+      expect(cl.connect).toHaveBeenCalled();
+    })
   });
 
   describe('startBot', () => {
     it('should not start bot when not AuthData provided', () => {
       const spy = jest.spyOn(bot, '_createNewClient');
-      bot.startBot(opts, null);
+      bot.startBot(opts, undefined, null);
       expect(spy).not.toHaveBeenCalled();
     });
     it('should start bot when not started already', async () => {
@@ -123,14 +160,14 @@ describe('bot.ts', () => {
         .spyOn(bot, '_createNewClient')
         .mockReset()
         .mockResolvedValue(fakeClient);
-      await bot.startBot(opts, authData);
+      await bot.startBot(opts, undefined, authData);
       expect(spy).toHaveBeenCalled();
       expect(fakeClient.join).toHaveBeenCalledWith('test');
       expect(fakeEmit).toHaveBeenCalledWith('clientReady', fakeClient);
     });
     it('should not start bot when started already', () => {
       const spy = jest.spyOn(bot, '_createNewClient');
-      bot.startBot(opts, authData);
+      bot.startBot(opts, undefined, authData);
       expect(spy).not.toHaveBeenCalled();
     });
   });

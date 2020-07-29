@@ -1,5 +1,6 @@
 import * as fs from 'fs';
-import { Client } from 'tmi.js';
+import * as merge from 'deepmerge';
+import { Client, Options as TmiOptions } from 'tmi.js';
 import { AuthData, StartServerOptions } from '../server/server.types';
 import { refreshAccessToken } from '../server/auth';
 import { getClientReadyEmitter } from '../event';
@@ -13,12 +14,13 @@ let _channels: string[] = [];
 /** @internal **/
 export async function startBot(
   options: StartServerOptions,
+  tmiOptions: TmiOptions,
   authData: AuthData | null,
 ): Promise<void> {
   if (_client !== null || authData === null) {
     return;
   }
-  _client = await _this._createNewClient(options, authData);
+  _client = await _this._createNewClient(options, tmiOptions, authData);
   _channels = _this._readChannelsFromDisk();
 
   for (const channel of _channels) {
@@ -68,9 +70,10 @@ export async function leaveChannel(channel: string): Promise<string> {
 /** @internal */
 export async function _createNewClient(
   options: StartServerOptions,
+  tmiOptions: TmiOptions,
   authData: AuthData,
 ): Promise<Client> {
-  const client = Client({
+  const defaultOptions: TmiOptions = {
     options: {
       debug: true,
     },
@@ -82,7 +85,13 @@ export async function _createNewClient(
       username: options.clientId,
       password: authData.access_token,
     },
-  });
+  };
+
+  const opts = !tmiOptions
+    ? defaultOptions
+    : merge<TmiOptions>(defaultOptions, tmiOptions);
+
+  const client = Client(opts);
 
   // Note: _handleConnectError causes recursion to this function
   return client
@@ -115,7 +124,7 @@ export function _handleAuthError(
   authData: AuthData,
 ): Promise<Client> {
   return refreshAccessToken(opts, authData, true).then((newData) =>
-    _this._createNewClient(opts, newData),
+    _this._createNewClient(opts, opts.tmiOptions, newData),
   );
 }
 

@@ -5,7 +5,7 @@
  */
 
 import { Express } from 'express';
-import { Client } from 'tmi.js';
+import { Client, Options as TmiOptions } from 'tmi.js';
 import { EventEmitter } from 'events';
 import {
   StartServerOptions,
@@ -58,6 +58,11 @@ export interface InitializeOptions {
    *
    * */
   scopes?: string[];
+  /**
+   * You can override the default options the tmi.js client is initialized with using this object.
+   * Your options will be merged with the default.
+   * */
+  tmiOptions?: TmiOptions;
 }
 
 export interface InitializeObject {
@@ -111,6 +116,7 @@ export function initialize(
       beforeRouteSetup: initializeOptions.beforeRouteSetup,
       app: initializeOptions.app,
       listen: initializeOptions.listen ?? true,
+      tmiOptions: initializeOptions.tmiOptions,
     };
 
     // after the bot is ready the "clientReady" event is fired on this one
@@ -124,7 +130,7 @@ export function initialize(
         app = expressApp;
         return setup(opts);
       })
-      .then((authData) => bot.startBot(opts, authData))
+      .then((authData) => bot.startBot(opts, initializeOptions.tmiOptions, authData))
       .catch((error) => reject(error));
 
     clientEventEmitter.once('clientReady', (client: Client) => {
