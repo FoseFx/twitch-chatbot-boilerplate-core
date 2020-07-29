@@ -1,22 +1,31 @@
 import * as fs from 'fs';
 import { _this as bot } from '../../../src/core/bot/bot';
-import * as auth from '../../../src/core/server/auth';
 import {
   StartServerOptions,
   AuthData,
 } from '../../../src/core/server/server.types';
-import { Client, Options as TmiOptions } from 'tmi.js';
+import ChatClient from 'twitch-chat-client';
+import { ChatClientOptions } from 'twitch-chat-client/lib/ChatClient';
 import * as clientReadyEventEmitter from '../../../src/core/event';
-import * as tmijs from 'tmi.js';
+import * as twitch from 'twitch';
 import { EventEmitter } from 'events';
+
+jest.genMockFromModule('twitch-chat-client');
+jest.mock('twitch-chat-client');
 
 const opts = {} as StartServerOptions;
 const authData = {} as AuthData;
-const newClient = {} as Client;
 
 describe('bot.ts', () => {
   let origCreateNewClient;
   beforeEach(() => {
+    jest
+      .spyOn(twitch, 'StaticAuthProvider')
+      .mockReturnValue(({} as unknown) as twitch.StaticAuthProvider);
+    jest
+      .spyOn(twitch, 'RefreshableAuthProvider')
+      .mockReturnValue(({} as unknown) as twitch.RefreshableAuthProvider);
+
     origCreateNewClient = bot._createNewClient;
   });
 
@@ -24,123 +33,40 @@ describe('bot.ts', () => {
     bot._createNewClient = origCreateNewClient;
   });
 
-  describe('_handleAuthError', () => {
-    it('should reject when refreshAccessToken() rejects', () => {
-      const err = new Error('Some Error');
-      jest.spyOn(auth, 'refreshAccessToken').mockRejectedValue(err);
-
-      return expect(bot._handleAuthError(opts, authData)).rejects.toEqual(err);
-    });
-    it('should createNewClient when refreshAccessToken() returns new AuthData', async () => {
-      const newAuthData = { access_token: 'newAccessToken' } as AuthData;
-
-      const createNewClientSpy = jest
-        .spyOn(bot, '_createNewClient')
-        .mockResolvedValue(newClient);
-      jest.spyOn(auth, 'refreshAccessToken').mockResolvedValue(newAuthData);
-
-      expect(await bot._handleAuthError(opts, authData)).toEqual(newClient);
-      expect(createNewClientSpy).toHaveBeenCalled();
-    });
-  });
-
-  describe('handleConnectError', () => {
-    it('should call and return _handeAuthError() when the error is a login error', async () => {
-      const handleAuthErrorSpy = jest
-        .spyOn(bot, '_handleAuthError')
-        .mockResolvedValue(newClient);
-
-      const res = await bot._handleConnectError(
-        opts,
-        authData,
-        'Login authentication failed',
-      );
-      expect(handleAuthErrorSpy).toHaveBeenCalled();
-      expect(res).toEqual(newClient);
-    });
-
-    it('should return the error when it is not a login error', () => {
-      const handleAuthErrorSpy = jest
-        .spyOn(bot, '_handleAuthError')
-        .mockResolvedValue(newClient)
-        .mockReset();
-
-      return expect(bot._handleConnectError(opts, authData, 'sth else failed'))
-        .rejects.toEqual(Error('sth else failed'))
-        .then(() => {
-          expect(handleAuthErrorSpy).not.toHaveBeenCalled();
-        });
-    });
-  });
-
   describe('_createNewClient', () => {
-    it('should return new Client when connection is successful', async () => {
+    it('should return new Client when connection is successful', () => {
+      expect.assertions(1);
       const cl = ({
         connect: jest.fn().mockResolvedValue(undefined),
-      } as unknown) as Client;
+      } as unknown) as ChatClient;
 
-      jest.spyOn(tmijs, 'Client').mockReturnValue(cl);
-      const hCESpy = jest.spyOn(bot, '_handleConnectError');
+      ((ChatClient as unknown) as jest.Mock).mockReturnValue(cl);
 
-      await bot._createNewClient(opts, undefined, authData);
-      expect(hCESpy).not.toHaveBeenCalled();
-    });
-
-    it('should call handleConnectError when connect fails', () => {
-      const cl = ({
-        connect: jest.fn().mockRejectedValue('somerror'),
-      } as unknown) as Client;
-
-      jest.spyOn(tmijs, 'Client').mockReturnValue(cl);
-
-      const hCESpy = jest
-        .spyOn(bot, '_handleConnectError')
-        .mockImplementation((_opts, _authData, error) => {
-          return Promise.reject(error);
-        });
-
-      return bot._createNewClient(opts, undefined, authData).catch((error) => {
-        expect(error).toEqual('somerror');
-        expect(hCESpy).toHaveBeenCalled();
+      return bot._createNewClient(opts, undefined, authData).then((rescl) => {
+        expect(rescl).toEqual(cl);
       });
     });
-
-    it('should merge options', async () => {
+    it('should pass options', async () => {
+      expect.assertions(2);
       const cl = ({
         connect: jest.fn().mockResolvedValue(undefined),
-      } as unknown) as Client;
+      } as unknown) as ChatClient;
 
-      const customOptions: TmiOptions = {
-        options: {
-          debug: false
-        },
-        connection: {
-          maxReconnectAttempts: 5
-        }
-      };
-      const expectedOptions: TmiOptions = {
-        options: {
-          debug: false,
-        },
-        connection: {
-          secure: true,
-          reconnect: true,
-          maxReconnectAttempts: 5
-        },
-        identity: {
-          username: opts.clientId,
-          password: authData.access_token,
-        },
+      const customOptions: ChatClientOptions = {
+        ssl: false,
+        channels: ['test'],
       };
 
-      jest.spyOn(tmijs, 'Client').mockImplementation((options) => {
-        expect(options).toEqual(expectedOptions);
-        return cl;
-      });
-    
+      ((ChatClient as unknown) as jest.Mock).mockImplementation(
+        (_, options) => {
+          expect(options).toEqual(customOptions);
+          return cl;
+        },
+      );
+
       await bot._createNewClient(opts, customOptions, authData);
       expect(cl.connect).toHaveBeenCalled();
-    })
+    });
   });
 
   describe('startBot', () => {
@@ -151,7 +77,7 @@ describe('bot.ts', () => {
     });
     it('should start bot when not started already', async () => {
       const fakeEmit = jest.fn();
-      const fakeClient = ({ join: jest.fn() } as unknown) as Client;
+      const fakeClient = ({ join: jest.fn() } as unknown) as ChatClient;
       jest.spyOn(bot, '_readChannelsFromDisk').mockReturnValue(['test']);
       jest
         .spyOn(clientReadyEventEmitter, 'getClientReadyEmitter')
@@ -178,7 +104,7 @@ describe('bot.ts', () => {
       bot._setChannels(['other']);
       const fakeCl = ({
         join: jest.fn().mockResolvedValue([]),
-      } as unknown) as Client;
+      } as unknown) as ChatClient;
       jest.spyOn(fs, 'writeFileSync').mockReturnValue(undefined);
       bot._setClient(fakeCl);
       return bot.joinChannel('test').then(() => {
@@ -193,7 +119,7 @@ describe('bot.ts', () => {
       bot._setChannels(['other', 'test', 'another']);
       const fakeCl = ({
         part: jest.fn().mockResolvedValue([]),
-      } as unknown) as Client;
+      } as unknown) as ChatClient;
       const wfSSpy = jest
         .spyOn(fs, 'writeFileSync')
         .mockReset()

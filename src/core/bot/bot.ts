@@ -1,20 +1,29 @@
 import * as fs from 'fs';
-import * as merge from 'deepmerge';
-import { Client, Options as TmiOptions } from 'tmi.js';
-import { AuthData, StartServerOptions } from '../server/server.types';
-import { refreshAccessToken } from '../server/auth';
+import ChatClient from 'twitch-chat-client';
+import { ChatClientOptions } from 'twitch-chat-client/lib/ChatClient';
+import {
+  AccessToken,
+  RefreshableAuthProvider,
+  StaticAuthProvider,
+} from 'twitch';
+import {
+  AuthData,
+  StartServerOptions,
+  TokenResponse,
+} from '../server/server.types';
 import { getClientReadyEmitter } from '../event';
 import { ensureDirExists } from '../util';
+import { writeToDisk } from '../setup';
 
 /** @internal */
-let _client: Client | null = null;
+let _client: ChatClient | null = null;
 /** @internal */
 let _channels: string[] = [];
 
 /** @internal **/
 export async function startBot(
   options: StartServerOptions,
-  tmiOptions: TmiOptions,
+  tmiOptions: ChatClientOptions,
   authData: AuthData | null,
 ): Promise<void> {
   if (_client !== null || authData === null) {
@@ -60,72 +69,45 @@ export async function joinChannel(channel: string): Promise<string> {
  * ```
  */
 export async function leaveChannel(channel: string): Promise<string> {
-  return _client.part(channel).then(() => {
-    _channels = _channels.filter((c) => c !== channel);
-    _this._storeChannelsOnDisk();
-    return channel;
-  });
+  _client.part(channel);
+  _channels = _channels.filter((c) => c !== channel);
+  _this._storeChannelsOnDisk();
+  return channel;
 }
 
 /** @internal */
 export async function _createNewClient(
   options: StartServerOptions,
-  tmiOptions: TmiOptions,
+  chatClientOptions: ChatClientOptions,
   authData: AuthData,
-): Promise<Client> {
-  const defaultOptions: TmiOptions = {
-    options: {
-      debug: true,
+): Promise<ChatClient> {
+  const authProvider = new RefreshableAuthProvider(
+    new StaticAuthProvider(
+      options.clientId,
+      authData.access_token,
+      options.setupScopes,
+    ),
+    {
+      clientSecret: options.clientSecret,
+      refreshToken: authData.refresh_token,
+      onRefresh: (token: AccessToken) => {
+        writeToDisk({
+          access_token: token.accessToken,
+          refresh_token: token.refreshToken,
+        } as TokenResponse);
+      },
     },
-    connection: {
-      secure: true,
-      reconnect: true,
-    },
-    identity: {
-      username: options.clientId,
-      password: authData.access_token,
-    },
-  };
+  );
 
-  const opts = !tmiOptions
-    ? defaultOptions
-    : merge<TmiOptions>(defaultOptions, tmiOptions);
-
-  const client = Client(opts);
+  const client = new ChatClient(authProvider, chatClientOptions);
 
   // Note: _handleConnectError causes recursion to this function
-  return client
-    .connect()
-    .then(() => client)
-    .catch((e) => _this._handleConnectError(options, authData, e));
+  return client.connect().then(() => client);
 }
 
 /** @internal */
 export function isBotRunning(): boolean {
   return !!_client;
-}
-
-/** @internal */
-export async function _handleConnectError(
-  opts: StartServerOptions,
-  authData: AuthData,
-  error: string,
-): Promise<Client> {
-  if (error === 'Login authentication failed') {
-    return _this._handleAuthError(opts, authData);
-  } else {
-    throw new Error(error);
-  }
-}
-
-/** @internal */
-export function _handleAuthError(
-  opts: StartServerOptions,
-  authData: AuthData,
-): Promise<Client> {
-  return refreshAccessToken(opts, authData, true).then((newData) =>
-    _this._createNewClient(opts, opts.tmiOptions, newData),
-  );
 }
 
 /** @internal */
@@ -148,7 +130,7 @@ export function _readChannelsFromDisk(): string[] {
 }
 
 /** @internal */
-export function _setClient(cl: Client): void {
+export function _setClient(cl: ChatClient): void {
   _client = cl;
 }
 
@@ -163,8 +145,6 @@ export const _this = {
   joinChannel,
   leaveChannel,
   _createNewClient,
-  _handleConnectError,
-  _handleAuthError,
   _storeChannelsOnDisk,
   _readChannelsFromDisk,
   _setClient,

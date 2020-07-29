@@ -1,5 +1,5 @@
 import { Express } from 'express';
-import { Options as TmiOptions } from 'tmi.js';
+import { ChatClientOptions } from 'twitch-chat-client/lib/ChatClient';
 import { BoilerplateEventEmitter } from '../event';
 
 export interface StartServerOptions {
@@ -14,7 +14,7 @@ export interface StartServerOptions {
   app?: Express;
   listen: boolean;
   beforeRouteSetup?: (app: Express) => void;
-  tmiOptions?: TmiOptions;
+  tmiOptions?: ChatClientOptions;
 }
 
 export interface AuthData {

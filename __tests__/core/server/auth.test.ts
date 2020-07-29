@@ -161,42 +161,17 @@ describe('auth', () => {
     });
 
     it('should return error when request fails', () => {
-      const writeSpy = jest
-        .spyOn(setup, 'writeToDisk')
-        .mockImplementation(() => ({}));
-
       const respObj = { status: 400, message: 'Some Error idk' };
 
       networkMock.reply(400, respObj);
 
-      return auth.refreshAccessToken(opts, authData, true).catch((e) => {
+      return auth.refreshAccessToken(opts, authData).catch((e) => {
         expect(e).toEqual(
           new Error(
             'Refresh request was rejected: 400: ' + JSON.stringify(respObj),
           ),
         );
-        expect(writeSpy).not.toHaveBeenCalled();
       });
-    });
-    it('should return new authData and writeToDisk', () => {
-      const writeSpy = jest
-        .spyOn(setup, 'writeToDisk')
-        .mockImplementation(() => ({}));
-
-      const respObj = {
-        access_token: 'someAT',
-        refresh_token: 'someRT',
-        expires_in: 6969,
-      } as TokenResponse;
-
-      networkMock.reply(200, respObj);
-
-      return auth
-        .refreshAccessToken(opts, authData, true)
-        .then((data: AuthData) => {
-          expect(data).toEqual(respObj);
-          expect(writeSpy).toHaveBeenCalled();
-        });
     });
   });
 

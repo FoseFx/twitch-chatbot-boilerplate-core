@@ -7,7 +7,7 @@ import {
   AuthData,
   BasicProfile,
 } from './server.types';
-import { writeToDisk, finishSetup } from '../setup';
+import { finishSetup } from '../setup';
 import { ensureFetchIsOk } from './util';
 
 /**
@@ -97,7 +97,6 @@ export function obtainAccessToken(
 export async function refreshAccessToken(
   options: StartServerOptions,
   authData: AuthData,
-  write: boolean,
 ): Promise<AuthData> {
   const refreshURL =
     `https://id.twitch.tv/oauth2/token` +
@@ -119,9 +118,6 @@ export async function refreshAccessToken(
   }
 
   const json = (await resp.json()) as TokenResponse;
-  if (write) {
-    writeToDisk(json);
-  }
   return json;
 }
 

@@ -1,3 +1,8 @@
+process.on('unhandledRejection', function (err) {
+  console.error(err);
+  process.exit(1);
+});
+
 global.console = {
   info: jest.fn(),
   log: jest.fn(), // console.log are ignored in tests
@@ -6,4 +11,6 @@ global.console = {
   error: console.error,
   warn: console.warn,
   debug: console.debug,
+  info: console.info,
+  trace: console.trace,
 };

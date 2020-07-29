@@ -5,7 +5,8 @@
  */
 
 import { Express } from 'express';
-import { Client, Options as TmiOptions } from 'tmi.js';
+import ChatClient from 'twitch-chat-client';
+import { ChatClientOptions } from 'twitch-chat-client/lib/ChatClient';
 import { EventEmitter } from 'events';
 import {
   StartServerOptions,
@@ -62,11 +63,11 @@ export interface InitializeOptions {
    * You can override the default options the tmi.js client is initialized with using this object.
    * Your options will be merged with the default.
    * */
-  tmiOptions?: TmiOptions;
+  tmiOptions?: ChatClientOptions;
 }
 
 export interface InitializeObject {
-  client: Client;
+  client: ChatClient;
   app: Express;
   /**
    * You can use this EventEmitter to listen to events like 'join' and 'leave',
@@ -130,17 +131,19 @@ export function initialize(
         app = expressApp;
         return setup(opts);
       })
-      .then((authData) => bot.startBot(opts, initializeOptions.tmiOptions, authData))
+      .then((authData) =>
+        bot.startBot(opts, initializeOptions.tmiOptions, authData),
+      )
       .catch((error) => reject(error));
 
-    clientEventEmitter.once('clientReady', (client: Client) => {
+    clientEventEmitter.once('clientReady', (client: ChatClient) => {
       client.connect = () => {
         throw new Error(
           'The twitch-chatbot-boilerplate core gave you an already connected client, there is no need to call connect()',
         );
       };
-      client.disconnect = () => {
-        throw new Error('You should not call disconnect()');
+      client.quit = () => {
+        throw new Error('You should not call quit()');
       };
 
       resolve({ client, app, boilerplate: opts.eventEmitter });
