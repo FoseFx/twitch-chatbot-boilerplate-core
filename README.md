@@ -8,6 +8,8 @@
 
 > This project is not affiliated to Twitch Interactive Inc in any way.
 
+![Header](.github/images/header.png?raw=true)
+
 ## Read this first
 
 This package should only be used directly when you don't seek for a full boilerplate as it only exports the [initialize()][initialize-api] function.
